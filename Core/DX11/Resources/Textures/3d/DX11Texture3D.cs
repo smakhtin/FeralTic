@@ -104,11 +104,7 @@ namespace FeralTic.DX11.Resources
             DX11Texture3D res = new DX11Texture3D(context);
             try
             {
-                var data = File.ReadAllBytes(path);
-
-                //var arr = new byte[1024];
-
-                var dataStream = new DataStream(data, true, false);
+                var dataStream = new DataStream(File.ReadAllBytes(path), true, false);
                 
                 var description = new Texture3DDescription
                 {
@@ -123,7 +119,7 @@ namespace FeralTic.DX11.Resources
                     Format = loadinfo.Format
                 };
 
-                var dataBox = new DataBox(description.Width, description.Width*description.Height, dataStream);
+                var dataBox = new DataBox(description.Width, description.Width * description.Height, dataStream);
 
                 var texture = new Texture3D(context.Device, description, dataBox);
 
@@ -137,6 +133,8 @@ namespace FeralTic.DX11.Resources
                 res.Height = desc.Height;
                 res.Format = desc.Format;
                 res.Depth = desc.Depth;
+
+                dataStream.Dispose();
             }
             catch
             {
