@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-
+using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
@@ -94,6 +95,53 @@ namespace FeralTic.DX11.Resources
             res.Height = desc.Height;
             res.Format = desc.Format;
             res.Depth = desc.Depth;
+
+            return res;
+        }
+
+        public static DX11Texture3D FromRawFile(DX11RenderContext context, string path, ImageLoadInformation loadinfo)
+        {
+            DX11Texture3D res = new DX11Texture3D(context);
+            try
+            {
+                var data = File.ReadAllBytes(path);
+
+                //var arr = new byte[1024];
+
+                var dataStream = new DataStream(data, true, false);
+                
+                var description = new Texture3DDescription
+                {
+                    BindFlags = BindFlags.ShaderResource,
+                    //CpuAccessFlags = CpuAccessFlags.None,
+                    MipLevels = 1,
+                    Usage = ResourceUsage.Immutable,
+                    OptionFlags = ResourceOptionFlags.None,
+                    Width = loadinfo.Width,
+                    Height = loadinfo.Height,
+                    Depth = loadinfo.Depth,
+                    Format = loadinfo.Format
+                };
+
+                var dataBox = new DataBox(description.Width, description.Width*description.Height, dataStream);
+
+                var texture = new Texture3D(context.Device, description, dataBox);
+
+                res.Resource = texture;
+
+                res.SRV = new ShaderResourceView(context.Device, res.Resource);
+
+                Texture3DDescription desc = res.Resource.Description;
+
+                res.Width = desc.Width;
+                res.Height = desc.Height;
+                res.Format = desc.Format;
+                res.Depth = desc.Depth;
+            }
+            catch
+            {
+
+            }
 
             return res;
         }
