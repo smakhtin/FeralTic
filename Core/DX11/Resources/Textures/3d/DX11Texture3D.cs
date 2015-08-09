@@ -131,8 +131,9 @@ namespace FeralTic.DX11.Resources
 
                 res.Width = desc.Width;
                 res.Height = desc.Height;
-                res.Format = desc.Format;
                 res.Depth = desc.Depth;
+                
+                res.Format = desc.Format;
 
                 dataStream.Dispose();
             }
